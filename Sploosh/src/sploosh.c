@@ -1,9 +1,11 @@
 #include <libmod/libmod.h>
 
+#include <stddef.h>
+
 libmod_application_t libmod_application = {
 		{
 				"Sploosh",
-				"The Sploosh bot",
+				NULL,
 				{0, 0, 1, 0},
 				{ 0,
 						{ }
