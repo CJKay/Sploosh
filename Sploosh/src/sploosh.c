@@ -1,6 +1,8 @@
 #include <libmod/libmod.h>
 
 #include <stddef.h>
+#include <stdio.h>
+#include <string.h>
 
 libmod_application_t libmod_application = {
 		{
@@ -13,12 +15,41 @@ libmod_application_t libmod_application = {
 		}
 };
 
-int main(int argc, char *argv[]) {
-	if(argc < 2 || strcmp(argv[1], "help") == 0) {
-		puts("Usage: sploosh <bot name>");
-		puts("    Runs the Sploosh bot located in `./bots/<bot name>`");
+void sploosh_printusage(void) {
+	puts("Usage: sploosh [options] name");
+	puts("Options:");
+	puts("  -v, --version     :Display version information.");
+	puts("      --help        :Show this information.");
+	puts("  -e, --error ERROR :Get a generic error message from error number ERROR.");
+	puts("");
+	puts("Report issues to <https://github.com/CJKay/Sploosh/issues>");
+}
 
-		return 1;
+void sploosh_printversion(void) {
+	printf("Sploosh %i.%i.%i\n", libmod_application.stub.version.major, libmod_application.stub.version.minor, libmod_application.stub.version.revision);
+	puts("Copyright 2012 Chris Kay/nFemto Software");
+	puts("License decision pending.");
+	puts("This is free software: you are free to change and redistribute it.");
+	puts("There is NO WARRANTY, to the extent permitted by law.");
+}
+
+int main(int argc, char *argv[]) {
+	if(argc < 2 || strcmp(argv[1], "--help") == 0) {
+		sploosh_printusage();
+
+		return 0;
+	} else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+		sploosh_printversion();
+
+		return 0;
+	} else if(strcmp(argv[1], "-e") == 0 || strcmp(argv[1], "--error") == 0) {
+		if(argc < 3) {
+			sploosh_printusage();
+
+			return 0;
+		} else {
+			//TODO: Implement error definitions.
+		}
 	}
 
 	return 0;
