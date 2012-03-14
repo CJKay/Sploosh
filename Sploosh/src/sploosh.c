@@ -1,8 +1,11 @@
+#include "../include/sploosh_error.h"
+
 #include <libmod/libmod.h>
 
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 libmod_application_t libmod_application = {
 		{
@@ -37,20 +40,23 @@ int main(int argc, char *argv[]) {
 	if(argc < 2 || strcmp(argv[1], "--help") == 0) {
 		sploosh_printusage();
 
-		return 0;
+		return SPLOOSH_NOERROR;
 	} else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
 		sploosh_printversion();
 
-		return 0;
+		return SPLOOSH_NOERROR;
 	} else if(strcmp(argv[1], "-e") == 0 || strcmp(argv[1], "--error") == 0) {
 		if(argc < 3) {
 			sploosh_printusage();
 
-			return 0;
+			return SPLOOSH_NOERROR;
 		} else {
-			//TODO: Implement error definitions.
+			sploosh_error_t error = atoi(argv[2]);
+			printf("%s.\n", sploosh_error_tostring(error));
+
+			return SPLOOSH_NOERROR;
 		}
 	}
 
-	return 0;
+	return SPLOOSH_NOERROR;
 }
