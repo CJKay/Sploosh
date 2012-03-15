@@ -7,8 +7,6 @@
 
 typedef struct sploosh_log {
 	FILE *file;
-	FILE *out;
-	FILE *error;
 } sploosh_log_t;
 
 sploosh_error_t sploosh_log_open(sploosh_log_t *log);
