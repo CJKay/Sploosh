@@ -1,4 +1,5 @@
 #include "../include/sploosh_error.h"
+#include "../include/sploosh.h"
 
 #include <libmod/libmod.h>
 
@@ -6,12 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 
 libmod_application_t libmod_application = {
 		{
 				"Sploosh",
 				NULL,
+				NULL, // Context stub
 				{0, 0, 1, 0},
 				{ 0,
 						{ }
