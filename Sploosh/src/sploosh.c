@@ -1,24 +1,11 @@
-#include "../include/sploosh_error.h"
 #include "../include/sploosh.h"
-
-#include <libmod/libmod.h>
+#include "../include/sploosh_error.h"
 
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-libmod_application_t libmod_application = {
-		{
-				"Sploosh",
-				NULL,
-				NULL, // Context stub
-				{0, 0, 1, 0},
-				{ 0,
-						{ }
-				}
-		}
-};
+#include <ctype.h>
 
 void sploosh_printusage(void) {
 	puts("Usage: sploosh [options] name");
