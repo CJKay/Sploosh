@@ -61,6 +61,13 @@ int main(int argc, char *argv[]) {
 
 			return SPLOOSH_NOERROR;
 		}
+	} else {
+		if(argc >= 2)
+			printf("Unknown option: %s\n", argv[1]);
+
+		sploosh_printusage();
+
+		return SPLOOSH_NOERROR;
 	}
 
 	return SPLOOSH_NOERROR;
