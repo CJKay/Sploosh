@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 libmod_application_t libmod_application = {
 		{
@@ -46,13 +47,17 @@ int main(int argc, char *argv[]) {
 
 		return SPLOOSH_NOERROR;
 	} else if(strcmp(argv[1], "-e") == 0 || strcmp(argv[1], "--error") == 0) {
-		if(argc < 3) {
+		if(argc < 3 || !isdigit(argv[2][0])) {
 			sploosh_printusage();
 
 			return SPLOOSH_NOERROR;
 		} else {
 			sploosh_error_t error = atoi(argv[2]);
-			printf("%s.\n", sploosh_error_tostring(error));
+			if(error < SPLOOSH_LASTERROR) {
+				printf("%s.\n", sploosh_error_tostring(error));
+			} else {
+				puts("Invalid error number.");
+			}
 
 			return SPLOOSH_NOERROR;
 		}
