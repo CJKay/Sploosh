@@ -1,6 +1,10 @@
 #ifndef SPLOOSH_LOG_H
 #define SPLOOSH_LOG_H
 
+#include "../include/sploosh_error.h"
+
+#include <stdio.h>
+
 typedef struct sploosh_log {
 	FILE *file;
 	FILE *out;
