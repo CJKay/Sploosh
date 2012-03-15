@@ -3,6 +3,7 @@
 
 typedef enum sploosh_error {
 	SPLOOSH_NOERROR = 0,
+	SPLOOSH_LOGFAILURE,
 	SPLOOSH_LASTERROR
 } sploosh_error_t;
 
