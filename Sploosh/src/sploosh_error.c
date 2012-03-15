@@ -7,7 +7,7 @@ static const char *sploosh_errstrs[] = {
 };
 
 const char *sploosh_error_tostring(sploosh_error_t error) {
-	if(error < SPLOOSH_LASTERROR)
+	if(error < SPLOOSH_LAST_ERROR)
 		return sploosh_errstrs[error];
 
 	return sploosh_errstrs[SPLOOSH_NO_ERROR];
