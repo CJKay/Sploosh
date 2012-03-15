@@ -29,25 +29,25 @@ int main(int argc, char *argv[]) {
 	if(argc < 2 || strcmp(argv[1], "--help") == 0) {
 		sploosh_printusage();
 
-		return SPLOOSH_NOERROR;
+		return SPLOOSH_NO_ERROR;
 	} else if(strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
 		sploosh_printversion();
 
-		return SPLOOSH_NOERROR;
+		return SPLOOSH_NO_ERROR;
 	} else if(strcmp(argv[1], "-e") == 0 || strcmp(argv[1], "--error") == 0) {
 		if(argc < 3 || !isdigit(argv[2][0])) {
 			sploosh_printusage();
 
-			return SPLOOSH_NOERROR;
+			return SPLOOSH_NO_ERROR;
 		} else {
 			sploosh_error_t error = atoi(argv[2]);
-			if(error < SPLOOSH_LASTERROR) {
+			if(error < SPLOOSH_LAST_ERROR) {
 				printf("%s.\n", sploosh_error_tostring(error));
 			} else {
 				puts("Invalid error number.");
 			}
 
-			return SPLOOSH_NOERROR;
+			return SPLOOSH_NO_ERROR;
 		}
 	} else {
 		if(argc >= 2)
@@ -55,8 +55,8 @@ int main(int argc, char *argv[]) {
 
 		sploosh_printusage();
 
-		return SPLOOSH_NOERROR;
+		return SPLOOSH_NO_ERROR;
 	}
 
-	return SPLOOSH_NOERROR;
+	return SPLOOSH_NO_ERROR;
 }
