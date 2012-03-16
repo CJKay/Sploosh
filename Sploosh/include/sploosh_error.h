@@ -1,4 +1,4 @@
-#ifndef SPLOOSH_ERROR__H
+#ifndef SPLOOSH_ERROR_H
 #define SPLOOSH_ERROR_H
 
 typedef enum sploosh_error {
