@@ -1,5 +1,9 @@
 #include "../include/sploosh_log.h"
 
+#include <stdarg.h>
+#include <time.h>
+#include <stdlib.h>
+
 sploosh_error_t sploosh_log_open(sploosh_log_t *log, const char *file) {
 	if((log->file = fopen(file, "wt")) == NULL) {
 		perror("Unable to open log");
@@ -9,7 +13,27 @@ sploosh_error_t sploosh_log_open(sploosh_log_t *log, const char *file) {
 	return SPLOOSH_NO_ERROR;
 }
 
-sploosh_error_t sploosh_log_write(sploosh_log_t *log, const char *format, ...) {
+sploosh_error_t sploosh_log_printf(sploosh_log_t *log, const char *tag, const char *format, ...) {
+	char intermediate[256], out[256];
+
+	va_list argp;
+
+	va_start(argp, format);
+	vsnprintf(intermediate, 256, format, argp);
+	va_end(argp);
+
+	time_t rawtime;
+	struct tm *ptime;
+
+	time(&rawtime);
+	ptime = gmtime(&rawtime);
+
+	snprintf(out, 256, "[%02i:%02i:%02i %s] %s\n", ptime->tm_hour, ptime->tm_min, ptime->tm_sec, tag, intermediate);
+
+	printf("%s\n", out);
+
+	free(ptime);
+
 	return SPLOOSH_NO_ERROR;
 }
 
