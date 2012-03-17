@@ -9,6 +9,7 @@
 
 typedef struct sploosh_log {
 	FILE *file;
+	const char *statement;
 } sploosh_log_t;
 
 typedef enum sploosh_log_statement {
@@ -19,10 +20,12 @@ typedef enum sploosh_log_statement {
 } sploosh_log_statement_t;
 
 sploosh_error_t sploosh_log_open(sploosh_log_t *log, const char *file);
-sploosh_error_t sploosh_log_printf(sploosh_log_t *log, sploosh_log_statement_t tag, const char *format, ...);
-sploosh_error_t sploosh_log_puts(sploosh_log_t *log, sploosh_log_statement_t tag, const char *str);
-sploosh_error_t sploosh_log_eprintf(sploosh_log_t *log, sploosh_log_statement_t tag, unsigned int line, const char *file, const char *format, ...);
-sploosh_error_t sploosh_log_eputs(sploosh_log_t *log, sploosh_log_statement_t tag, unsigned int line, const char *file, const char *str);
+sploosh_error_t sploosh_log_printf(sploosh_log_t *log, sploosh_log_statement_t stmt, const char *format, ...);
+sploosh_error_t sploosh_log_puts(sploosh_log_t *log, sploosh_log_statement_t stmt, const char *str);
+sploosh_error_t sploosh_log_eprintf(sploosh_log_t *log, sploosh_log_statement_t stmt, unsigned int line, const char *file, const char *format, ...);
+sploosh_error_t sploosh_log_eputs(sploosh_log_t *log, sploosh_log_statement_t stmt, unsigned int line, const char *file, const char *str);
 sploosh_error_t sploosh_log_close(sploosh_log_t *log);
+const char     *sploosh_log_strstmt(sploosh_log_t *log, sploosh_log_statement_t stmt);
+void            sploosh_log_setstmt(sploosh_log_t *log, const char *stmt);
 
 #endif // SPLOOSH_LOG_H
