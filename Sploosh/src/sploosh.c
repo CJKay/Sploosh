@@ -1,5 +1,6 @@
 #include "../include/sploosh.h"
 #include "../include/sploosh_error.h"
+#include "../include/sploosh_log.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -49,7 +50,7 @@ int main(int argc, char *argv[]) {
 
 			return SPLOOSH_NO_ERROR;
 		}
-	} else {
+	} else if(argc <= 2 && argv[1][0] == '-') {
 		if(argc >= 2)
 			printf("Unknown option: %s\n", argv[1]);
 
@@ -57,6 +58,19 @@ int main(int argc, char *argv[]) {
 
 		return SPLOOSH_NO_ERROR;
 	}
+
+	char logfile[strlen(argv[1]) + 9];
+	strcpy(logfile, argv[1]);
+	strcat(logfile, "/log.txt");
+
+	sploosh_error_t error;
+
+	sploosh_log_t log;
+	if((error = sploosh_log_open(&log, logfile)) != SPLOOSH_NO_ERROR)
+		return SPLOOSH_LOG_OPEN_FAILED;
+
+	if((error = sploosh_log_close(&log)) != SPLOOSH_NO_ERROR)
+		return SPLOOSH_LOG_CLOSE_FAILED;
 
 	return SPLOOSH_NO_ERROR;
 }
