@@ -46,6 +46,8 @@ sploosh_error_t sploosh_log_puts(sploosh_log_t *log, sploosh_log_statement_t stm
 	) < 0)
 		return SPLOOSH_PRINTF_FAILED;
 
+	fflush(log->file);
+
 	return SPLOOSH_NO_ERROR;
 }
 
@@ -74,6 +76,8 @@ sploosh_error_t sploosh_log_eputs(sploosh_log_t *log, sploosh_log_statement_t st
 		fprintf(log->file, "[%02i:%02i:%02i %s][%s:%i] %s\n", ptime->tm_hour, ptime->tm_min, ptime->tm_sec, sploosh_log_strstmt(log, stmt), file, line, str) < 0
 	)
 		return SPLOOSH_PRINTF_FAILED;
+
+	fflush(log->file);
 
 	return SPLOOSH_NO_ERROR;
 }
