@@ -96,6 +96,6 @@ const char *sploosh_log_strstmt(sploosh_log_t *log, sploosh_log_statement_t stmt
 	return sploosh_log_stmtstrs[stmt];
 }
 
-inline void sploosh_log_setstmt(sploosh_log_t *log, const char *stmt) {
+void sploosh_log_setstmt(sploosh_log_t *log, const char *stmt) {
 	log->statement = stmt;
 }
