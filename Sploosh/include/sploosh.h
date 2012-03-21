@@ -9,7 +9,7 @@ libmod_application_t libmod_application = {
 		{
 				"Sploosh",
 				NULL,
-				NULL, // Context stub
+				NULL, /* Context stub */
 				{ 0, 0, 1, 0 },
 				{ 0,
 						{ }
