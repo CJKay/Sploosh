@@ -35,6 +35,13 @@ sploosh_error_t sploosh_log_printf(sploosh_log_t *log, sploosh_log_statement_t s
 }
 
 sploosh_error_t sploosh_log_puts(sploosh_log_t *log, sploosh_log_statement_t stmt, const char *str) {
+	if(log->file == NULL) {
+#ifndef NDEBUG
+		fprintf(stderr, "Log has already been closed. Don't write to it!\n");
+#endif
+		return SPLOOSH_LOG_OPEN_FAILED;
+	}
+
 	time_t rawtime;
 	struct tm *ptime;
 
@@ -66,6 +73,13 @@ sploosh_error_t sploosh_log_eprintf(sploosh_log_t *log, sploosh_log_statement_t 
 }
 
 sploosh_error_t sploosh_log_eputs(sploosh_log_t *log, sploosh_log_statement_t stmt, unsigned int line, const char *file, const char *str) {
+	if(log->file == NULL) {
+#ifndef NDEBUG
+		fprintf(stderr, "Log has already been closed. Don't write to it!\n");
+#endif
+		return SPLOOSH_LOG_OPEN_FAILED;
+	}
+
 	time_t rawtime;
 	struct tm *ptime;
 
@@ -83,8 +97,10 @@ sploosh_error_t sploosh_log_eputs(sploosh_log_t *log, sploosh_log_statement_t st
 }
 
 sploosh_error_t sploosh_log_close(sploosh_log_t *log) {
-	if(fclose(log->file))
+	if(log->file != NULL && fclose(log->file))
 		return SPLOOSH_LOG_CLOSE_FAILED;
+
+	log->file = NULL;
 
 	return SPLOOSH_NO_ERROR;
 }
