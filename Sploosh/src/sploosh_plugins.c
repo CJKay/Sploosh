@@ -5,7 +5,7 @@
 
 sploosh_error_t sploosh_plugins_add(sploosh_plugins_t *list, libmod_module_t *plugin) {
 	bool freespace = false;
-	uint64_t index = 0, i;
+	int index = 0, i;
 	for(i = 0; i < SPLOOSH_MAXPLUGINS; i++) {
 		if(list->plugin[i] == plugin) {
 			return SPLOOSH_PLUGINS_ALREADYLOADED;
@@ -28,7 +28,7 @@ sploosh_error_t sploosh_plugins_add(sploosh_plugins_t *list, libmod_module_t *pl
 }
 
 sploosh_error_t sploosh_plugins_remove(sploosh_plugins_t *list, libmod_module_t *plugin) {
-	uint64_t i;
+	int i;
 	for(i = 0; i < list->count; i++) {
 		if(list->plugin[i] == plugin) {
 			list->plugin[i] = NULL;

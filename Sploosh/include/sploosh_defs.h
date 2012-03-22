@@ -3,4 +3,4 @@
 
 #define SPLOOSH_MAXPLUGINS 32
 
-#endif // SPLOOSH_DEFS_H
+#endif /* SPLOOSH_DEFS_H */

@@ -14,4 +14,4 @@ typedef struct sploosh_bot {
 	config_t cfg;
 } sploosh_bot_t;
 
-#endif // SPLOOSH_BOT_H
+#endif /* SPLOOSH_BOT_H */

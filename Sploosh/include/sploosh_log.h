@@ -28,4 +28,4 @@ sploosh_error_t sploosh_log_close(sploosh_log_t *log);
 const char     *sploosh_log_strstmt(sploosh_log_t *log, sploosh_log_statement_t stmt);
 void            sploosh_log_setstmt(sploosh_log_t *log, const char *stmt);
 
-#endif // SPLOOSH_LOG_H
+#endif /* SPLOOSH_LOG_H */

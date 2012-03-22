@@ -55,7 +55,6 @@ sploosh_error_t sploosh_config_import(sploosh_bot_t *bot, const char *cfgfile) {
 	config_setting_t *setting;
 	if((setting = config_lookup(&bot->cfg, "plugins")) != NULL) {
 		int i;
-		int j = config_setting_length(setting);
 		for(i = 0; (i < SPLOOSH_MAXPLUGINS) && (i < config_setting_length(setting)); ++i) {
 			const char *filename = config_setting_get_string_elem(setting, i);
 

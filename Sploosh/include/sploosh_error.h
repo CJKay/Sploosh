@@ -16,4 +16,4 @@ typedef enum sploosh_error {
 
 const char *sploosh_error_tostring(sploosh_error_t error);
 
-#endif // SPLOOSH_ERROR_H
+#endif /* SPLOOSH_ERROR_H */

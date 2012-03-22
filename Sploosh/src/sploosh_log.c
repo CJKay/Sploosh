@@ -21,12 +21,12 @@ sploosh_error_t sploosh_log_open(sploosh_log_t *log, const char *file) {
 }
 
 sploosh_error_t sploosh_log_printf(sploosh_log_t *log, sploosh_log_statement_t stmt, const char *format, ...) {
-	char intermediate[strlen(format) + 128];
+	char intermediate[SPLOOSH_LOG_BUFFERSIZE];
 
 	va_list argp;
 
 	va_start(argp, format);
-	vsnprintf(intermediate, 256, format, argp);
+	vsprintf(intermediate, format, argp);
 	va_end(argp);
 
 	sploosh_log_puts(log, stmt, intermediate);
@@ -64,7 +64,7 @@ sploosh_error_t sploosh_log_eprintf(sploosh_log_t *log, sploosh_log_statement_t 
 	va_list argp;
 
 	va_start(argp, format);
-	vsnprintf(intermediate, 256, format, argp);
+	vsprintf(intermediate, format, argp);
 	va_end(argp);
 
 	sploosh_log_eputs(log, stmt, line, file , intermediate);
