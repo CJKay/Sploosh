@@ -1,6 +1,7 @@
 #include "../include/sploosh_config.h"
 #include "../include/sploosh_error.h"
 #include "../include/sploosh_log.h"
+#include "../include/sploosh.h"
 
 #include <libconfig.h>
 
@@ -53,7 +54,19 @@ sploosh_error_t sploosh_config_import(sploosh_bot_t *bot, const char *cfgfile) {
 
 	config_setting_t *setting;
 	if((setting = config_lookup(&bot->cfg, "plugins")) != NULL) {
+		int i;
+		int j = config_setting_length(setting);
+		for(i = 0; (i < SPLOOSH_MAXPLUGINS) && (i < config_setting_length(setting)); ++i) {
+			const char *filename = config_setting_get_string_elem(setting, i);
 
+			libmod_module_t *module;
+			if((module = libmod_module_load(&libmod_application, filename)) == NULL) {
+				sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Failed to load %s: %s.", filename, libmod_error_string(libmod_error_number()), libmod_error_details());
+
+				config_destroy(&bot->cfg);
+				break;
+			}
+		}
 	}
 
 	return SPLOOSH_NO_ERROR;
