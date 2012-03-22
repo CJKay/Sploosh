@@ -5,17 +5,7 @@
 
 #include <stddef.h>
 
-libmod_application_t libmod_application = {
-		{
-				"Sploosh",
-				NULL,
-				NULL, /* Context stub */
-				{ 0, 0, 1, 0 },
-				{ 0,
-						{ }
-				}
-		}
-};
+extern libmod_application_t libmod_application;
 
 void sploosh_printusage(void);
 void sploosh_printversion(void);
