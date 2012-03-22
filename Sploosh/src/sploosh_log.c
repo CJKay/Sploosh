@@ -1,5 +1,7 @@
 #include "../include/sploosh_log.h"
 
+#include "../include/snprintf.h"
+
 #include <stdarg.h>
 #include <time.h>
 #include <stdlib.h>
@@ -26,7 +28,7 @@ sploosh_error_t sploosh_log_printf(sploosh_log_t *log, sploosh_log_statement_t s
 	va_list argp;
 
 	va_start(argp, format);
-	vsprintf(intermediate, format, argp);
+	vsnprintf(intermediate, SPLOOSH_LOG_BUFFERSIZE, format, argp);
 	va_end(argp);
 
 	sploosh_log_puts(log, stmt, intermediate);
@@ -64,7 +66,7 @@ sploosh_error_t sploosh_log_eprintf(sploosh_log_t *log, sploosh_log_statement_t 
 	va_list argp;
 
 	va_start(argp, format);
-	vsprintf(intermediate, format, argp);
+	vsnprintf(intermediate, SPLOOSH_LOG_BUFFERSIZE, format, argp);
 	va_end(argp);
 
 	sploosh_log_eputs(log, stmt, line, file , intermediate);
