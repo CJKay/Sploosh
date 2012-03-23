@@ -25,8 +25,15 @@ void sploosh_irc_signal(int signal) {
 	exit(SPLOOSH_NO_ERROR);
 }
 
+void sploosh_irc_joined(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+	irc_cmd_msg(session, "#lfs-support", "valterguy sucks!");
+	irc_cmd_quit(session, "Was just testing :)");
+}
+
 void sploosh_irc_connected(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Connection successful!");
+
+	irc_cmd_join(session, "#lfs-support", NULL);
 }
 
 sploosh_error_t sploosh_irc_run(void) {
@@ -36,6 +43,7 @@ sploosh_error_t sploosh_irc_run(void) {
 
 	irc_callbacks_t callbacks = { };
 	callbacks.event_connect = &sploosh_irc_connected;
+	callbacks.event_join = &sploosh_irc_joined;
 
 	if((bot->irc.session = irc_create_session(&callbacks)) == 0) {
 		sploosh_log_eputs(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Couldn't create IRC session.");
@@ -53,7 +61,7 @@ sploosh_error_t sploosh_irc_run(void) {
 		bot->info.username,
 		bot->info.realname
 	) != 0) {
-		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Couldn't connect to %s: %s", bot->info.server, irc_strerror(irc_errno(bot->irc.session)));
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Couldn't connect to %s: %s.", bot->info.server, irc_strerror(irc_errno(bot->irc.session)));
 
 		irc_destroy_session(bot->irc.session);
 		bot->irc.session = NULL;
@@ -63,8 +71,9 @@ sploosh_error_t sploosh_irc_run(void) {
 
 	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Connecting...");
 
-	if(irc_run(bot->irc.session) != 0) {
-		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "IRC error: %s", irc_strerror(irc_errno(bot->irc.session)));
+	int error;
+	if((error = irc_run(bot->irc.session)) != 0) {
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "IRC error %i: %s.", error, irc_strerror(error));
 
 		irc_destroy_session(bot->irc.session);
 		bot->irc.session = NULL;
