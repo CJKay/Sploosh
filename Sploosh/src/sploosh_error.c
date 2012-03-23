@@ -9,7 +9,8 @@ static const char *sploosh_errstrs[] = {
 	[SPLOOSH_PLUGINS_NOTINLIST] = "[SPLOOSH_PLUGINS_NOTINLIST] Couldn't find plugin in list",
 	[SPLOOSH_PLUGINS_ALREADYLOADED] = "[SPLOOSH_PLUGINS_ALREADYLOADED] Plugin is already loaded",
 	[SPLOOSH_CONFIG_COULDNTLOAD] = "[SPLOOSH_CONFIG_COULDNTLOAD] Couldn't load config file",
-	[SPLOOSH_CONFIG_MISSINGVALUE] = "[SPLOOSH_CONFIG_MISSINGVALUE] Configuration is missing a critical value"
+	[SPLOOSH_CONFIG_MISSINGVALUE] = "[SPLOOSH_CONFIG_MISSINGVALUE] Configuration is missing a critical value",
+	[SPLOOSH_IRC_BADSESSION] = "[SPLOOSH_IRC_BADSESSION] Couldn't create libircclient irc_session_t"
 };
 
 const char *sploosh_error_tostring(sploosh_error_t error) {
