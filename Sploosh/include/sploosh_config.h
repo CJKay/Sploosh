@@ -5,6 +5,6 @@
 #include "sploosh_bot.h"
 
 sploosh_error_t sploosh_config_import(const char *cfgfile);
-sploosh_error_t sploosh_config_destroy(void);
+void            sploosh_config_destroy(void);
 
 #endif

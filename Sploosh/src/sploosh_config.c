@@ -73,10 +73,8 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 	return SPLOOSH_NO_ERROR;
 }
 
-sploosh_error_t sploosh_config_destroy(void) {
+void sploosh_config_destroy(void) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	config_destroy(&bot->cfg);
-
-	return SPLOOSH_NO_ERROR;
 }
