@@ -5,32 +5,34 @@
 
 #include <libconfig.h>
 
-sploosh_error_t sploosh_config_import(sploosh_bot_t *bot, const char *cfgfile) {
+sploosh_error_t sploosh_config_import(const char *cfgfile) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
 	config_init(&bot->cfg);
 
 	if(!config_read_file(&bot->cfg, cfgfile)) {
-		sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), config_error_text(&bot->cfg));
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), config_error_text(&bot->cfg));
 		config_destroy(&bot->cfg);
 
 		return SPLOOSH_CONFIG_COULDNTLOAD;
 	}
 
 	if(!config_lookup_string(&bot->cfg, "nickname", &bot->info.nickname)) {
-		sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find nickname value");
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find nickname value");
 		config_destroy(&bot->cfg);
 
 		return SPLOOSH_CONFIG_MISSINGVALUE;
 	}
 
 	if(!config_lookup_string(&bot->cfg, "username", &bot->info.username)) {
-		sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find username value");
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find username value");
 		config_destroy(&bot->cfg);
 
 		return SPLOOSH_CONFIG_MISSINGVALUE;
 	}
 
 	if(!config_lookup_string(&bot->cfg, "realname", &bot->info.realname)) {
-		sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find realname value");
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find realname value");
 		config_destroy(&bot->cfg);
 
 		return SPLOOSH_CONFIG_MISSINGVALUE;
@@ -39,14 +41,14 @@ sploosh_error_t sploosh_config_import(sploosh_bot_t *bot, const char *cfgfile) {
 	config_lookup_string(&bot->cfg, "password", &bot->info.password);
 
 	if(!config_lookup_string(&bot->cfg, "server", &bot->info.server)) {
-		sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find server value");
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find server value");
 		config_destroy(&bot->cfg);
 
 		return SPLOOSH_CONFIG_MISSINGVALUE;
 	}
 
 	if(!config_lookup_int(&bot->cfg, "port", (long int *)&bot->info.port)) {
-		sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find port value");
+		sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Configuration error: %s:%d - %s.", cfgfile, config_error_line(&bot->cfg), "Couldn't find port value");
 		config_destroy(&bot->cfg);
 
 		return SPLOOSH_CONFIG_MISSINGVALUE;
@@ -60,7 +62,7 @@ sploosh_error_t sploosh_config_import(sploosh_bot_t *bot, const char *cfgfile) {
 
 			libmod_module_t *module;
 			if((module = libmod_module_load(&libmod_application, filename)) == NULL) {
-				sploosh_log_eprintf(&bot->log, SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Failed to load %s: %s.", filename, libmod_error_string(libmod_error_number()), libmod_error_details());
+				sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Failed to load %s: %s.", filename, libmod_error_string(libmod_error_number()), libmod_error_details());
 
 				config_destroy(&bot->cfg);
 				break;
@@ -71,7 +73,9 @@ sploosh_error_t sploosh_config_import(sploosh_bot_t *bot, const char *cfgfile) {
 	return SPLOOSH_NO_ERROR;
 }
 
-sploosh_error_t sploosh_config_destroy(sploosh_bot_t *bot) {
+sploosh_error_t sploosh_config_destroy(void) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
 	config_destroy(&bot->cfg);
 
 	return SPLOOSH_NO_ERROR;

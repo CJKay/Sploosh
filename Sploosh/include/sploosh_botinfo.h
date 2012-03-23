@@ -12,4 +12,4 @@ typedef struct sploosh_botinfo {
 	uint16_t port;
 } sploosh_botinfo_t;
 
-#endif // SPLOOSH_BOTINFO_H
+#endif /* SPLOOSH_BOTINFO_H */

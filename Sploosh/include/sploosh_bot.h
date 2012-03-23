@@ -4,6 +4,7 @@
 #include "sploosh_botinfo.h"
 #include "sploosh_plugins.h"
 #include "sploosh_log.h"
+#include "sploosh_error.h"
 
 #include <libconfig.h>
 
@@ -11,6 +12,7 @@ typedef struct sploosh_bot {
 	sploosh_botinfo_t info;
 	sploosh_plugins_t plugins;
 	sploosh_log_t log;
+	sploosh_error_t error;
 	config_t cfg;
 } sploosh_bot_t;
 

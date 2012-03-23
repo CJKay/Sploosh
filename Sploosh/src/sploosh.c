@@ -43,10 +43,10 @@ void sploosh_printversion(void) {
 
 void sploosh_signal(int signal) {
 	if(((sploosh_bot_t *)libmod_application.stub.context)->log.file != NULL)
-		sploosh_log_printf(&((sploosh_bot_t *)libmod_application.stub.context)->log, SPLOOSH_LOG_WARNING, "Caught interrupt signal %i.", signal);
+		sploosh_log_printf(SPLOOSH_LOG_WARNING, "Caught interrupt signal %i.", signal);
 
-	sploosh_config_destroy(libmod_application.stub.context);
-	sploosh_log_close(&((sploosh_bot_t *)libmod_application.stub.context)->log);
+	sploosh_config_destroy();
+	sploosh_log_close();
 
 	exit(SPLOOSH_NO_ERROR);
 }
@@ -93,25 +93,28 @@ int main(int argc, char *argv[]) {
 	sploosh_bot_t bot;
 	sploosh_error_t error;
 
-	if((error = sploosh_log_open(&bot.log, logfile)) != SPLOOSH_NO_ERROR)
+	libmod_application.stub.context = &bot;
+
+	if((error = sploosh_log_open(logfile)) != SPLOOSH_NO_ERROR)
 		return error;
 
-	sploosh_log_printf(&bot.log, SPLOOSH_LOG_NOTICE, "Log is saved at %s.", logfile);
+	sploosh_log_printf(SPLOOSH_LOG_NOTICE, "Log is saved at %s.", logfile);
 
-	libmod_application.stub.context = &bot;
 
 	char cfgfile[strlen(argv[1]) + 12];
 	strcpy(cfgfile, argv[1]);
 	strcat(cfgfile, "/config.cfg");
 
-	if((error = sploosh_config_import(&bot, cfgfile)) != SPLOOSH_NO_ERROR)
+	if((error = sploosh_config_import(cfgfile)) != SPLOOSH_NO_ERROR)
 		return error;
 
-	sploosh_config_destroy(&bot);
+	sploosh_config_destroy();
 
-	sploosh_log_puts(&bot.log, SPLOOSH_LOG_NOTICE, "Shutting down.");
+	/*if((error = sploosh_irc_run()))*/
 
-	if((error = sploosh_log_close(&bot.log)) != SPLOOSH_NO_ERROR)
+	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Shutting down.");
+
+	if((error = sploosh_log_close()) != SPLOOSH_NO_ERROR)
 		return error;
 
 	return SPLOOSH_NO_ERROR;
