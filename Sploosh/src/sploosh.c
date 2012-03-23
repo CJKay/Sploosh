@@ -3,6 +3,7 @@
 #include "../include/sploosh_log.h"
 #include "../include/sploosh_bot.h"
 #include "../include/sploosh_config.h"
+#include "../include/sploosh_irc.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -90,7 +91,7 @@ int main(int argc, char *argv[]) {
 	strcpy(logfile, argv[1]);
 	strcat(logfile, "/log.txt");
 
-	sploosh_bot_t bot;
+	sploosh_bot_t bot = { };
 	sploosh_error_t error;
 
 	libmod_application.stub.context = &bot;
@@ -100,22 +101,31 @@ int main(int argc, char *argv[]) {
 
 	sploosh_log_printf(SPLOOSH_LOG_NOTICE, "Log is saved at %s.", logfile);
 
-
 	char cfgfile[strlen(argv[1]) + 12];
 	strcpy(cfgfile, argv[1]);
 	strcat(cfgfile, "/config.cfg");
 
-	if((error = sploosh_config_import(cfgfile)) != SPLOOSH_NO_ERROR)
+	if((error = sploosh_config_import(cfgfile)) != SPLOOSH_NO_ERROR) {
+		sploosh_log_close();
+
 		return error;
+	}
+
+	if((error = sploosh_irc_run()) != SPLOOSH_NO_ERROR) {
+		sploosh_config_destroy();
+		sploosh_log_close();
+
+		return error;
+	}
 
 	sploosh_config_destroy();
 
-	/*if((error = sploosh_irc_run()))*/
-
 	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Shutting down.");
 
-	if((error = sploosh_log_close()) != SPLOOSH_NO_ERROR)
+	if((error = sploosh_log_close()) != SPLOOSH_NO_ERROR) {
+		fprintf(stderr, "Couldn't close log!");
 		return error;
+	}
 
 	return SPLOOSH_NO_ERROR;
 }
