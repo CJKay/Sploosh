@@ -60,12 +60,15 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 		for(i = 0; (i < SPLOOSH_MAXPLUGINS) && (i < config_setting_length(setting)); ++i) {
 			const char *filename = config_setting_get_string_elem(setting, i);
 
+			if(filename == NULL)
+				continue;
+
 			libmod_module_t *module;
 			if((module = libmod_module_load(&libmod_application, filename)) == NULL) {
 				sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Failed to load %s: %s.", filename, libmod_error_string(libmod_error_number()), libmod_error_details());
 
 				config_destroy(&bot->cfg);
-				break;
+				return SPLOOSH_PLUGINS_NOTFOUND;
 			}
 		}
 	}
