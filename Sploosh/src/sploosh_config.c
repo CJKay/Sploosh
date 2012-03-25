@@ -1,6 +1,7 @@
 #include "../include/sploosh_config.h"
 #include "../include/sploosh_error.h"
 #include "../include/sploosh_log.h"
+#include "../include/sploosh_plugins.h"
 #include "../include/sploosh.h"
 
 #include <libconfig.h>
@@ -65,10 +66,17 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 
 			libmod_module_t *module;
 			if((module = libmod_module_load(&libmod_application, filename)) == NULL) {
-				sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Failed to load %s: %s.", filename, libmod_error_string(libmod_error_number()), libmod_error_details());
+				sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Failed to load %s: %s (%s).", filename, libmod_error_string(libmod_error_number()), libmod_error_details());
 
 				config_destroy(&bot->cfg);
 				return SPLOOSH_PLUGINS_NOTFOUND;
+			}
+
+			sploosh_error_t error;
+			if((error = sploosh_plugins_add(module)) != SPLOOSH_NO_ERROR) {
+				sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Couldn't add '%s' to plugins (error %d).", module->stub.name, error);
+
+				return error;
 			}
 		}
 	}
