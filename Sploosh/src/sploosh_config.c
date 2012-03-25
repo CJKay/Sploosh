@@ -78,6 +78,38 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 
 				return error;
 			}
+
+			sploosh_plugin_settings_t *settings = calloc(1, sizeof(settings));
+			module->appcontext = settings;
+
+			config_setting_t *plugin_settings;
+
+			plugin_settings = config_lookup(&bot->cfg, module->stub.name);
+			if(plugin_settings != NULL) {
+				int j;
+				for(j = 0; (j < SPLOOSH_MAXPLUGINS) && (j < config_setting_length(plugin_settings)); ++j) {
+					config_setting_t *keyval;
+					keyval = config_setting_get_elem(plugin_settings, j);
+
+					switch(keyval->type) {
+						case CONFIG_TYPE_INT:
+							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.ival } };
+							break;
+						case CONFIG_TYPE_INT64:
+							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.llval } };
+							break;
+						case CONFIG_TYPE_FLOAT:
+							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.fval } };
+							break;
+						case CONFIG_TYPE_STRING:
+							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.sval } };
+							break;
+						case CONFIG_TYPE_BOOL:
+							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.ival } };
+							break;
+					}
+				}
+			}
 		}
 	}
 
