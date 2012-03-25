@@ -12,7 +12,7 @@
 #include <ctype.h>
 #include <signal.h>
 
-libmod_application_t libmod_application = {
+const libmod_application_t libmod_application = {
 	{
 		"Sploosh",
 		NULL,
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 
 	sploosh_config_destroy();
 
-	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Shutting down.");
+	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Shutting down...");
 
 	if((error = sploosh_log_close()) != SPLOOSH_NO_ERROR) {
 		fprintf(stderr, "Couldn't close log!");
