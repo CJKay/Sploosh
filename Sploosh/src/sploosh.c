@@ -12,19 +12,29 @@
 #include <ctype.h>
 #include <signal.h>
 
-const libmod_application_t libmod_application = {
+libmod_application_t libmod_application = {
 	{
 		"Sploosh",
 		NULL,
-		NULL, /* Context stub */
+		NULL,
 		{ 0, 0, 1, 0 },
-		{ 0,
-			{ }
+		{ 9,
+			{
+				{ "irc_cmd_join", &sploosh_irc_cmd_join },
+				{ "irc_cmd_part", &sploosh_irc_cmd_part },
+				{ "irc_cmd_invite", &sploosh_irc_cmd_invite },
+				{ "irc_cmd_names", &sploosh_irc_cmd_names },
+				{ "irc_cmd_list", &sploosh_irc_cmd_list },
+				{ "irc_cmd_topic", &sploosh_irc_cmd_topic },
+				{ "irc_cmd_channel_mode", &sploosh_irc_cmd_channel_mode },
+				{ "irc_cmd_user_mode", &sploosh_irc_cmd_user_mode },
+				{ "irc_cmd_kick", &sploosh_irc_cmd_kick }
+			}
 		}
 	}
 };
 
-void sploosh_printusage(void) {
+static void sploosh_printusage(void) {
 	puts("Usage: sploosh [options] name");
 	puts("Options:");
 	puts("  -v, --version     :Display version information.");
@@ -34,7 +44,7 @@ void sploosh_printusage(void) {
 	puts("Report issues to <https://github.com/CJKay/Sploosh/issues>");
 }
 
-void sploosh_printversion(void) {
+static void sploosh_printversion(void) {
 	printf("Sploosh %i.%i.%i\n", libmod_application.stub.version.major, libmod_application.stub.version.minor, libmod_application.stub.version.revision);
 	puts("Copyright 2012 Chris Kay/nFemto Software");
 	puts("License decision pending.");
@@ -42,10 +52,11 @@ void sploosh_printversion(void) {
 	puts("There is NO WARRANTY, to the extent permitted by law.");
 }
 
-void sploosh_signal(int signal) {
+static void sploosh_signal(int signal) {
 	if(((sploosh_bot_t *)libmod_application.stub.context)->log.file != NULL)
 		sploosh_log_printf(SPLOOSH_LOG_WARNING, "Caught interrupt signal %i.", signal);
 
+	sploosh_plugins_clear();
 	sploosh_config_destroy();
 	sploosh_log_close();
 
@@ -118,6 +129,7 @@ int main(int argc, char *argv[]) {
 		return error;
 	}
 
+	sploosh_plugins_clear();
 	sploosh_config_destroy();
 
 	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Shutting down...");
