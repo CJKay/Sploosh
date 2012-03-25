@@ -10,7 +10,7 @@
 
 extern libmod_application_t libmod_application;
 
-void sploosh_irc_signal(int signal) {
+static void sploosh_irc_signal(int signal) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	if(((sploosh_bot_t *)libmod_application.stub.context)->log.file != NULL)
@@ -27,7 +27,7 @@ void sploosh_irc_signal(int signal) {
 	exit(SPLOOSH_NO_ERROR);
 }
 
-void sploosh_irc_event_connect(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_connect(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	sploosh_log_puts(SPLOOSH_LOG_NOTICE, "Connection successful!");
@@ -40,7 +40,7 @@ void sploosh_irc_event_connect(irc_session_t *session, const char *event, const 
 	}
 }
 
-void sploosh_irc_event_nick(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_nick(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -51,7 +51,7 @@ void sploosh_irc_event_nick(irc_session_t *session, const char *event, const cha
 	}
 }
 
-void sploosh_irc_event_quit(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_quit(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -62,7 +62,7 @@ void sploosh_irc_event_quit(irc_session_t *session, const char *event, const cha
 	}
 }
 
-void sploosh_irc_event_join(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_join(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -73,7 +73,7 @@ void sploosh_irc_event_join(irc_session_t *session, const char *event, const cha
 	}
 }
 
-void sploosh_irc_event_part(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_part(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -84,7 +84,7 @@ void sploosh_irc_event_part(irc_session_t *session, const char *event, const cha
 	}
 }
 
-void sploosh_irc_event_mode(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_mode(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -95,7 +95,7 @@ void sploosh_irc_event_mode(irc_session_t *session, const char *event, const cha
 	}
 }
 
-void sploosh_irc_event_umode(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_umode(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -106,7 +106,7 @@ void sploosh_irc_event_umode(irc_session_t *session, const char *event, const ch
 	}
 }
 
-void sploosh_irc_event_topic(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_topic(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -117,7 +117,7 @@ void sploosh_irc_event_topic(irc_session_t *session, const char *event, const ch
 	}
 }
 
-void sploosh_irc_event_kick(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_kick(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -128,7 +128,7 @@ void sploosh_irc_event_kick(irc_session_t *session, const char *event, const cha
 	}
 }
 
-void sploosh_irc_event_channel(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_channel(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -139,7 +139,7 @@ void sploosh_irc_event_channel(irc_session_t *session, const char *event, const 
 	}
 }
 
-void sploosh_irc_event_privmsg(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_privmsg(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -150,7 +150,7 @@ void sploosh_irc_event_privmsg(irc_session_t *session, const char *event, const 
 	}
 }
 
-void sploosh_irc_event_notice(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_notice(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -161,7 +161,7 @@ void sploosh_irc_event_notice(irc_session_t *session, const char *event, const c
 	}
 }
 
-void sploosh_irc_event_invite(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_invite(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -172,7 +172,7 @@ void sploosh_irc_event_invite(irc_session_t *session, const char *event, const c
 	}
 }
 
-void sploosh_irc_event_ctcp_req(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_ctcp_req(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -183,7 +183,7 @@ void sploosh_irc_event_ctcp_req(irc_session_t *session, const char *event, const
 	}
 }
 
-void sploosh_irc_event_ctcp_rep(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_ctcp_rep(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -194,7 +194,7 @@ void sploosh_irc_event_ctcp_rep(irc_session_t *session, const char *event, const
 	}
 }
 
-void sploosh_irc_event_ctcp_action(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_ctcp_action(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -205,7 +205,7 @@ void sploosh_irc_event_ctcp_action(irc_session_t *session, const char *event, co
 	}
 }
 
-void sploosh_irc_event_unknown(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_unknown(irc_session_t *session, const char *event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -216,7 +216,7 @@ void sploosh_irc_event_unknown(irc_session_t *session, const char *event, const 
 	}
 }
 
-void sploosh_irc_event_numeric(irc_session_t *session, unsigned int event, const char *origin, const char **params, unsigned int count) {
+static void sploosh_irc_event_numeric(irc_session_t *session, unsigned int event, const char *origin, const char **params, unsigned int count) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -227,7 +227,7 @@ void sploosh_irc_event_numeric(irc_session_t *session, unsigned int event, const
 	}
 }
 
-void sploosh_irc_event_dcc_chat_req(irc_session_t *session, const char *nick, const char *addr, sploosh_irc_dcc_t dccid) {
+static void sploosh_irc_event_dcc_chat_req(irc_session_t *session, const char *nick, const char *addr, sploosh_irc_dcc_t dccid) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -238,7 +238,7 @@ void sploosh_irc_event_dcc_chat_req(irc_session_t *session, const char *nick, co
 	}
 }
 
-void sploosh_irc_event_dcc_send_req(irc_session_t *session, const char *nick, const char *addr, const char *filename, unsigned long size, sploosh_irc_dcc_t dccid) {
+static void sploosh_irc_event_dcc_send_req(irc_session_t *session, const char *nick, const char *addr, const char *filename, unsigned long size, sploosh_irc_dcc_t dccid) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
@@ -249,32 +249,86 @@ void sploosh_irc_event_dcc_send_req(irc_session_t *session, const char *nick, co
 	}
 }
 
+int sploosh_irc_cmd_join(const char *channel, const char *key) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_join(bot->irc.session, channel, key);
+}
+
+int sploosh_irc_cmd_part(const char *channel) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_part(bot->irc.session, channel);
+}
+
+int sploosh_irc_cmd_invite(const char *nick, const char *channel) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_invite(bot->irc.session, nick, channel);
+}
+
+int sploosh_irc_cmd_names(const char *channel) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_names(bot->irc.session, channel);
+}
+
+int sploosh_irc_cmd_list(const char *channel) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_list(bot->irc.session, channel);
+}
+
+int sploosh_irc_cmd_topic(const char *channel, const char *topic) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_topic(bot->irc.session, channel, topic);
+}
+
+int sploosh_irc_cmd_channel_mode(const char *channel, const char *mode) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_channel_mode(bot->irc.session, channel, mode);
+}
+
+int sploosh_irc_cmd_user_mode(const char *mode) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_user_mode(bot->irc.session, mode);
+}
+
+int sploosh_irc_cmd_kick(const char *nick, const char *channel, const char *reason) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_kick(bot->irc.session, nick, channel, reason);
+}
+
 sploosh_error_t sploosh_irc_run(void) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	assert(bot->irc.session == NULL);
 
 	irc_callbacks_t callbacks = {
-			&sploosh_irc_event_connect,
-			&sploosh_irc_event_nick,
-			&sploosh_irc_event_quit,
-			&sploosh_irc_event_join,
-			&sploosh_irc_event_part,
-			&sploosh_irc_event_mode,
-			&sploosh_irc_event_umode,
-			&sploosh_irc_event_topic,
-			&sploosh_irc_event_kick,
-			&sploosh_irc_event_channel,
-			&sploosh_irc_event_privmsg,
-			&sploosh_irc_event_notice,
-			&sploosh_irc_event_invite,
-			&sploosh_irc_event_ctcp_req,
-			&sploosh_irc_event_ctcp_rep,
-			&sploosh_irc_event_ctcp_action,
-			&sploosh_irc_event_unknown,
-			&sploosh_irc_event_numeric,
-			&sploosh_irc_event_dcc_chat_req,
-			&sploosh_irc_event_dcc_send_req
+		&sploosh_irc_event_connect,
+		&sploosh_irc_event_nick,
+		&sploosh_irc_event_quit,
+		&sploosh_irc_event_join,
+		&sploosh_irc_event_part,
+		&sploosh_irc_event_mode,
+		&sploosh_irc_event_umode,
+		&sploosh_irc_event_topic,
+		&sploosh_irc_event_kick,
+		&sploosh_irc_event_channel,
+		&sploosh_irc_event_privmsg,
+		&sploosh_irc_event_notice,
+		&sploosh_irc_event_invite,
+		&sploosh_irc_event_ctcp_req,
+		&sploosh_irc_event_ctcp_rep,
+		&sploosh_irc_event_ctcp_action,
+		&sploosh_irc_event_unknown,
+		&sploosh_irc_event_numeric,
+		&sploosh_irc_event_dcc_chat_req,
+		&sploosh_irc_event_dcc_send_req
 	};
 
 	if((bot->irc.session = irc_create_session(&callbacks)) == 0) {
