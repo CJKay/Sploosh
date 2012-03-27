@@ -17,20 +17,8 @@ libmod_application_t libmod_application = {
 		"Sploosh",
 		NULL,
 		NULL,
-		{ 0, 0, 1, 0 },
-		{ 9,
-			{
-				{ "sploosh_irc_cmd_join", &sploosh_irc_cmd_join },
-				{ "sploosh_irc_cmd_part", &sploosh_irc_cmd_part },
-				{ "sploosh_irc_cmd_invite", &sploosh_irc_cmd_invite },
-				{ "sploosh_irc_cmd_names", &sploosh_irc_cmd_names },
-				{ "sploosh_irc_cmd_list", &sploosh_irc_cmd_list },
-				{ "sploosh_irc_cmd_topic", &sploosh_irc_cmd_topic },
-				{ "sploosh_irc_cmd_channel_mode", &sploosh_irc_cmd_channel_mode },
-				{ "sploosh_irc_cmd_user_mode", &sploosh_irc_cmd_user_mode },
-				{ "sploosh_irc_cmd_kick", &sploosh_irc_cmd_kick }
-			}
-		}
+		{ 1, 0, 0, 0 },
+		{ 0 , { } }
 	}
 };
 

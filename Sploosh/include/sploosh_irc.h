@@ -1,6 +1,8 @@
 #ifndef SPLOOSH_IRC_H
 #define SPLOOSH_IRC_H
 
+#ifdef SPLOOSH_EXECUTABLE
+
 #include "sploosh_error.h"
 
 #include <libircclient/libircclient.h>
@@ -26,5 +28,7 @@ int sploosh_irc_cmd_topic(const char *channel, const char *topic);
 int sploosh_irc_cmd_channel_mode(const char *channel, const char *mode);
 int sploosh_irc_cmd_user_mode(const char *mode);
 int sploosh_irc_cmd_kick(const char *nick, const char *channel, const char *reason);
+
+#endif
 
 #endif /* SPLOOSH_IRC_H */

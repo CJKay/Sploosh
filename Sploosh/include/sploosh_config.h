@@ -1,8 +1,6 @@
 #ifndef SPLOOSH_CONFIG_H
 #define SPLOOSH_CONFIG_H
 
-#include "sploosh_error.h"
-#include "sploosh_bot.h"
 #include "sploosh_defs.h"
 
 typedef struct sploosh_plugin_setting {
@@ -21,7 +19,15 @@ typedef struct sploosh_plugin_settings {
 	sploosh_plugin_setting_t settings[SPLOOSH_PLUGIN_MAXSETTINGS];
 } sploosh_plugin_settings_t;
 
+#ifdef SPLOOSH_EXECUTABLE
+
+#include "sploosh_error.h"
+#include "sploosh_bot.h"
+#include "sploosh_defs.h"
+
 sploosh_error_t sploosh_config_import(const char *cfgfile);
 void sploosh_config_destroy(void);
+
+#endif
 
 #endif

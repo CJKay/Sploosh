@@ -3,6 +3,7 @@
 
 #include "sploosh_botinfo.h"
 #include "sploosh_plugins.h"
+
 #include "sploosh_log.h"
 #include "sploosh_error.h"
 #include "sploosh_irc.h"

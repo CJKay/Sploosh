@@ -5,6 +5,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include <libmod/libmod.h>
+
+extern libmod_application_t libmod_application;
+
 sploosh_error_t sploosh_plugins_add(libmod_module_t *plugin) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
@@ -51,6 +55,7 @@ void sploosh_plugins_clear(void) {
 	unsigned int i;
 	for(i = 0; i < bot->plugins.count; i++) {
 		if(bot->plugins.plugin[i] != NULL) {
+			free(bot->plugins.plugin[i]->appcontext);
 			libmod_module_unload(&libmod_application, bot->plugins.plugin[i]);
 		}
 	}

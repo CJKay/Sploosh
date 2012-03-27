@@ -18,6 +18,10 @@ typedef enum sploosh_error {
 	SPLOOSH_LAST_ERROR
 } sploosh_error_t;
 
+#ifdef SPLOOSH_EXECUTABLE
+
 const char *sploosh_error_tostring(sploosh_error_t error);
+
+#endif
 
 #endif /* SPLOOSH_ERROR_H */

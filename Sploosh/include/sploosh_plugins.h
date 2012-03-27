@@ -1,6 +1,8 @@
 #ifndef SPLOOSH_PLUGINS_H
 #define SPLOOSH_PLUGINS_H
 
+#ifdef SPLOOSH_EXECUTABLE
+
 #include "sploosh_defs.h"
 #include "sploosh_error.h"
 
@@ -14,5 +16,7 @@ typedef struct sploosh_plugins {
 sploosh_error_t sploosh_plugins_add(libmod_module_t *plugin);
 sploosh_error_t sploosh_plugins_remove(libmod_module_t *plugin);
 void sploosh_plugins_clear(void);
+
+#endif
 
 #endif /* SPLOOSH_PLUGINS_H */

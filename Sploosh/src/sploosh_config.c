@@ -2,9 +2,14 @@
 #include "../include/sploosh_error.h"
 #include "../include/sploosh_log.h"
 #include "../include/sploosh_plugins.h"
+#include "../include/sploosh_api.h"
 #include "../include/sploosh.h"
 
 #include <libconfig.h>
+
+#include <string.h>
+
+extern libmod_application_t libmod_application;
 
 sploosh_error_t sploosh_config_import(const char *cfgfile) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
@@ -79,8 +84,40 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 				return error;
 			}
 
-			sploosh_plugin_settings_t *settings = calloc(1, sizeof(settings));
-			module->appcontext = settings;
+			sploosh_api_t *api = calloc(1, sizeof(*api));
+			module->appcontext = api;
+
+			sploosh_api_t api_tmp = {
+				{
+					bot->info.nickname,
+					bot->info.username,
+					bot->info.realname,
+					bot->info.password,
+					bot->info.server,
+					bot->info.port
+				},
+
+				{
+					&sploosh_irc_cmd_join,
+					&sploosh_irc_cmd_part,
+					&sploosh_irc_cmd_invite,
+					&sploosh_irc_cmd_names,
+					&sploosh_irc_cmd_list,
+					&sploosh_irc_cmd_topic,
+					&sploosh_irc_cmd_channel_mode,
+					&sploosh_irc_cmd_user_mode,
+					&sploosh_irc_cmd_kick
+				},
+
+				{
+					&sploosh_log_printf,
+					&sploosh_log_puts,
+					&sploosh_log_eprintf,
+					&sploosh_log_eputs
+				}
+			};
+
+			memcpy(api, &api_tmp, sizeof(api_tmp));
 
 			config_setting_t *plugin_settings;
 
@@ -91,25 +128,40 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 					config_setting_t *keyval;
 					keyval = config_setting_get_elem(plugin_settings, j);
 
+					sploosh_plugin_setting_t val;
+					val.name = keyval->name;
+
 					switch(keyval->type) {
 						case CONFIG_TYPE_INT:
-							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.ival } };
+							val.ival = keyval->value.ival;
 							break;
 						case CONFIG_TYPE_INT64:
-							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.llval } };
+							val.llval = keyval->value.llval;
 							break;
 						case CONFIG_TYPE_FLOAT:
-							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.fval } };
+							val.fval = keyval->value.fval;
 							break;
 						case CONFIG_TYPE_STRING:
-							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.sval } };
+							val.sval = keyval->value.sval;
 							break;
 						case CONFIG_TYPE_BOOL:
-							settings->settings[settings->count++] = (sploosh_plugin_setting_t){ keyval->name, { keyval->value.ival } };
+							val.ival = keyval->value.ival;
+							break;
+						default:
+							val.llval = 0;
 							break;
 					}
+
+					api->settings.settings[api->settings.count++] = val;
 				}
 			}
+
+			void (*sploosh_main)(void) = libmod_function_fromname(&module->stub, "sploosh_main");
+			if(sploosh_main == NULL) {
+				sploosh_log_eprintf(SPLOOSH_LOG_ERROR, __LINE__, __FILE__, "Module '%s' isn't a valid Sploosh plugin.", module->stub.name);
+			}
+
+			sploosh_main();
 		}
 	}
 
