@@ -145,9 +145,14 @@ static void sploosh_irc_event_privmsg(irc_session_t *session, const char *event,
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.privmsg;
-		if(fn != NULL)
-			fn(event, origin, params, count);
+		sploosh_irc_event_callback_t fn;
+		if(*params == '!') {
+			printf("Caught %s!\n", params + 1);
+		} else {
+			fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.privmsg;
+			if(fn != NULL)
+				fn(event, origin, params, count);
+		}
 	}
 }
 
