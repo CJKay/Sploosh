@@ -3,16 +3,35 @@
 
 #include "sploosh_defs.h"
 
+typedef enum sploosh_plugin_setting_type {
+	SPLOOSH_TYPE_INT = 0,
+	SPLOOSH_TYPE_INT64,
+	SPLOOSH_TYPE_FLOAT,
+	SPLOOSH_TYPE_STRING,
+	SPLOOSH_TYPE_BOOL,
+	SPLOOSH_TYPE_LIST,
+	SPLOOSH_TYPE_UNKNOWN
+} sploosh_plugin_setting_type_t;
+
+typedef struct sploosh_plugin_setting_list sploosh_plugin_setting_list_t;
+
 typedef struct sploosh_plugin_setting {
 	const char *name;
+	sploosh_plugin_setting_type_t type;
 
 	union {
 		long ival;
 		long long llval;
 		double fval;
 		char *sval;
+		sploosh_plugin_setting_list_t *list;
 	};
 } sploosh_plugin_setting_t;
+
+typedef struct sploosh_plugin_setting_list {
+	unsigned int length;
+	sploosh_plugin_setting_t *elements;
+} sploosh_plugin_setting_list_t;
 
 typedef struct sploosh_plugin_settings {
 	unsigned int count;

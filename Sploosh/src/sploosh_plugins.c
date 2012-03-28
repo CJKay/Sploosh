@@ -1,5 +1,6 @@
 #include "../include/sploosh_plugins.h"
 #include "../include/sploosh_bot.h"
+#include "../include/sploosh_api.h"
 #include "../include/sploosh.h"
 
 #include <stddef.h>
@@ -52,11 +53,23 @@ sploosh_error_t sploosh_plugins_remove(libmod_module_t *plugin) {
 void sploosh_plugins_clear(void) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
-	unsigned int i;
+	unsigned int i, j;
 	for(i = 0; i < bot->plugins.count; i++) {
 		if(bot->plugins.plugin[i] != NULL) {
-			free(bot->plugins.plugin[i]->appcontext);
+			sploosh_api_t *api = bot->plugins.plugin[i]->appcontext;
+
+			for(j = 0; j < api->settings.count; j++) {
+				if(api->settings.settings[j].type == SPLOOSH_TYPE_LIST) {
+					sploosh_plugin_setting_list_t *list = api->settings.settings[j].list;
+					free(list->elements);
+					free(list);
+				}
+			}
+
+			free(api);
 			libmod_module_unload(&libmod_application, bot->plugins.plugin[i]);
+			bot->plugins.plugin[i] = NULL;
+			bot->plugins.count--;
 		}
 	}
 }

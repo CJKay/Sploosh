@@ -11,6 +11,48 @@
 
 extern libmod_application_t libmod_application;
 
+static void sploosh_config_loadsettings(config_setting_t *cfg_setting, sploosh_plugin_setting_t *sploosh_setting) {
+	sploosh_setting->name = cfg_setting->name;
+
+	switch(cfg_setting->type) {
+		case CONFIG_TYPE_INT:
+			sploosh_setting->type = SPLOOSH_TYPE_INT;
+			sploosh_setting->ival = cfg_setting->value.ival;
+			break;
+		case CONFIG_TYPE_INT64:
+			sploosh_setting->type = SPLOOSH_TYPE_INT64;
+			sploosh_setting->llval = cfg_setting->value.llval;
+			break;
+		case CONFIG_TYPE_FLOAT:
+			sploosh_setting->type = SPLOOSH_TYPE_FLOAT;
+			sploosh_setting->fval = cfg_setting->value.fval;
+			break;
+		case CONFIG_TYPE_STRING:
+			sploosh_setting->type = SPLOOSH_TYPE_STRING;
+			sploosh_setting->sval = cfg_setting->value.sval;
+			break;
+		case CONFIG_TYPE_BOOL:
+			sploosh_setting->type = SPLOOSH_TYPE_BOOL;
+			sploosh_setting->ival = cfg_setting->value.ival;
+			break;
+		case CONFIG_TYPE_LIST:
+			sploosh_setting->type = SPLOOSH_TYPE_LIST;
+			sploosh_setting->list = calloc(1, sizeof(*sploosh_setting->list));
+			sploosh_setting->list->length = cfg_setting->value.list->length;
+			sploosh_setting->list->elements = calloc(1, sizeof(sploosh_plugin_setting_t) * cfg_setting->value.list->length);
+
+			int i;
+			for(i = 0; i < sploosh_setting->list->length; i++)
+				sploosh_config_loadsettings(cfg_setting->value.list->elements[i], &sploosh_setting->list->elements[i]);
+
+			break;
+		default:
+			sploosh_setting->type = SPLOOSH_TYPE_UNKNOWN;
+			sploosh_setting->llval = 0;
+			break;
+	}
+}
+
 sploosh_error_t sploosh_config_import(const char *cfgfile) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
@@ -84,8 +126,8 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 				return error;
 			}
 
-			sploosh_api_t *api = calloc(1, sizeof(*api));
-			module->appcontext = api;
+			module->appcontext = calloc(1, sizeof(sploosh_api_t));
+			sploosh_api_t *api = module->appcontext;
 
 			sploosh_api_t api_tmp = {
 				{
@@ -98,6 +140,7 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 				},
 
 				{
+					&sploosh_irc_cmd_quit,
 					&sploosh_irc_cmd_join,
 					&sploosh_irc_cmd_part,
 					&sploosh_irc_cmd_invite,
@@ -106,7 +149,14 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 					&sploosh_irc_cmd_topic,
 					&sploosh_irc_cmd_channel_mode,
 					&sploosh_irc_cmd_user_mode,
-					&sploosh_irc_cmd_kick
+					/*&sploosh_irc_cmd_nick,*/
+					&sploosh_irc_cmd_whois,
+					&sploosh_irc_cmd_msg,
+					&sploosh_irc_cmd_me,
+					&sploosh_irc_cmd_notice,
+					&sploosh_irc_cmd_kick,
+					&sploosh_irc_cmd_ctcp_request,
+					&sploosh_irc_cmd_ctcp_reply
 				},
 
 				{
@@ -119,40 +169,14 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 
 			memcpy(api, &api_tmp, sizeof(api_tmp));
 
-			config_setting_t *plugin_settings;
+			config_setting_t *plugin_node;
 
-			plugin_settings = config_lookup(&bot->cfg, module->stub.name);
-			if(plugin_settings != NULL) {
+			plugin_node = config_lookup(&bot->cfg, module->stub.name);
+			if(plugin_node != NULL && plugin_node->type == CONFIG_TYPE_GROUP) {
 				int j;
-				for(j = 0; (j < SPLOOSH_MAXPLUGINS) && (j < config_setting_length(plugin_settings)); ++j) {
-					config_setting_t *keyval;
-					keyval = config_setting_get_elem(plugin_settings, j);
-
-					sploosh_plugin_setting_t val;
-					val.name = keyval->name;
-
-					switch(keyval->type) {
-						case CONFIG_TYPE_INT:
-							val.ival = keyval->value.ival;
-							break;
-						case CONFIG_TYPE_INT64:
-							val.llval = keyval->value.llval;
-							break;
-						case CONFIG_TYPE_FLOAT:
-							val.fval = keyval->value.fval;
-							break;
-						case CONFIG_TYPE_STRING:
-							val.sval = keyval->value.sval;
-							break;
-						case CONFIG_TYPE_BOOL:
-							val.ival = keyval->value.ival;
-							break;
-						default:
-							val.llval = 0;
-							break;
-					}
-
-					api->settings.settings[api->settings.count++] = val;
+				for(j = 0; (j < SPLOOSH_MAXPLUGINS) && (j < config_setting_length(plugin_node)); ++j) {
+					config_setting_t *plugin_settings = config_setting_get_elem(plugin_node, j);
+					sploosh_config_loadsettings(plugin_settings, &api->settings.settings[api->settings.count++]);
 				}
 			}
 

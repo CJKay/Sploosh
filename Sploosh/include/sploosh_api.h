@@ -25,6 +25,7 @@ typedef struct sploosh_api {
 	} info;
 
 	struct {
+		int (* const quit)(const char *reason);
 		int (* const join)(const char *channel, const char *key);
 		int (* const part)(const char *channel);
 		int (* const invite)(const char *nick, const char *channel);
@@ -33,7 +34,14 @@ typedef struct sploosh_api {
 		int (* const topic)(const char *channel, const char *topic);
 		int (* const channel_mode)(const char *channel, const char *mode);
 		int (* const user_mode)(const char *mode);
+		/*int (* const nick)(const char *newnick);*/
+		int (* const whois)(const char *nick);
+		int (* const msg)(const char *nch, const char *text);
+		int (* const me)(const char *nch, const char *text);
+		int (* const notice)(const char *nch, const char *text);
 		int (* const kick)(const char *nick, const char *channel, const char *reason);
+		int (* const ctcp_request)(const char *nick, const char *request);
+		int (* const ctcp_reply)(const char *nick, const char *reply);
 	} commands;
 
 	struct {

@@ -15,7 +15,7 @@ static void sploosh_irc_signal(int signal) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	if(((sploosh_bot_t *)libmod_application.stub.context)->log.file != NULL)
-		sploosh_log_printf(SPLOOSH_LOG_WARNING, "Caught interrupt signal %d. Disconnecting...", signal);
+		sploosh_log_printf(SPLOOSH_LOG_WARNING, "Caught interrupt signal %d.", signal);
 
 	if(irc_is_connected(bot->irc.session))
 		irc_cmd_quit(bot->irc.session, "Disconnecting...");
@@ -250,6 +250,12 @@ static void sploosh_irc_event_dcc_send_req(irc_session_t *session, const char *n
 	}
 }
 
+int sploosh_irc_cmd_quit(const char *reason) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_quit(bot->irc.session, reason);
+}
+
 int sploosh_irc_cmd_join(const char *channel, const char *key) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
@@ -298,10 +304,52 @@ int sploosh_irc_cmd_user_mode(const char *mode) {
 	return irc_cmd_user_mode(bot->irc.session, mode);
 }
 
+/*int sploosh_irc_cmd_nick(const char *newnick) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_nick(bot->irc.session, newnick);
+}*/
+
+int sploosh_irc_cmd_whois(const char *nick) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_whois(bot->irc.session, nick);
+}
+
+int sploosh_irc_cmd_msg(const char *nch, const char *text) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_msg(bot->irc.session, nch, text);
+}
+
+int sploosh_irc_cmd_me(const char *nch, const char *text) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_me(bot->irc.session, nch, text);
+}
+
+int sploosh_irc_cmd_notice(const char *nch, const char *text) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_notice(bot->irc.session, nch, text);
+}
+
 int sploosh_irc_cmd_kick(const char *nick, const char *channel, const char *reason) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	return irc_cmd_kick(bot->irc.session, nick, channel, reason);
+}
+
+int sploosh_irc_cmd_ctcp_request(const char *nick, const char *request) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_ctcp_request(bot->irc.session, nick, request);
+}
+
+int sploosh_irc_cmd_ctcp_reply(const char *nick, const char *reply) {
+	sploosh_bot_t *bot = libmod_application.stub.context;
+
+	return irc_cmd_ctcp_request(bot->irc.session, nick, reply);
 }
 
 sploosh_error_t sploosh_irc_run(void) {
