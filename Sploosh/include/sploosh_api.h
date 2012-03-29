@@ -5,7 +5,7 @@
 #include "sploosh_log.h"
 #include "sploosh_config.h"
 
-#include <stdint.h>
+#include <stdarg.h>
 
 typedef unsigned int sploosh_pluginid_t;
 typedef unsigned int sploosh_dccid_t;
@@ -54,6 +54,15 @@ typedef struct sploosh_api {
 	} log;
 
 	struct {
+		int (*snprintf)(char *str, size_t str_m, const char *fmt, ...);
+		int (*vsnprintf)(char *str, size_t str_m, const char *fmt, va_list ap);
+		int (*asprintf)(char **ptr, const char *fmt, ...);
+		int (*vasprintf)(char **ptr, const char *fmt, va_list ap);
+		int (*strbeginsw)(const char *str, const char *substr);
+		int (*strendsw)(const char *str, const char *substr);
+	} utils;
+
+	struct {
 		sploosh_event_generic_t connect;
 		sploosh_event_generic_t nick;
 		sploosh_event_generic_t quit;
@@ -78,17 +87,6 @@ typedef struct sploosh_api {
 	} events;
 
 	sploosh_plugin_settings_t settings;
-
-	struct {
-		int (*snprintf)(char *str, size_t str_m, const char *fmt, ...);
-		int (*vsnprintf)(char *str, size_t str_m, const char *fmt, va_list ap);
-		int (*asprintf)(char **ptr, const char *fmt, ...);
-		int (*vasprintf)(char **ptr, const char *fmt, va_list ap);
-		int (*asnprintf)(char **ptr, size_t str_m, const char *fmt, ...);
-		int (*vasnprintf)(char **ptr, size_t str_m, const char *fmt, va_list ap);
-		int (*strbeginsw)(const char *str, const char *substr);
-		int (*strendsw)(const char *str, const char *substr);
-	} utils;
 } sploosh_api_t;
 
 #endif /* SPLOOSH_API_H */
