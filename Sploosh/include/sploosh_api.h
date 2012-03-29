@@ -6,6 +6,7 @@
 #include "sploosh_config.h"
 
 #include <stdarg.h>
+#include <stddef.h>
 
 typedef unsigned int sploosh_pluginid_t;
 typedef unsigned int sploosh_dccid_t;
@@ -22,7 +23,7 @@ typedef struct sploosh_api {
 		const char *realname;
 		const char *password;
 		const char *server;
-		uint16_t port;
+		unsigned int port;
 	} info;
 
 	struct {
