@@ -54,12 +54,12 @@ typedef struct sploosh_api {
 	} log;
 
 	struct {
-		int (*snprintf)(char *str, size_t str_m, const char *fmt, ...);
-		int (*vsnprintf)(char *str, size_t str_m, const char *fmt, va_list ap);
-		int (*asprintf)(char **ptr, const char *fmt, ...);
-		int (*vasprintf)(char **ptr, const char *fmt, va_list ap);
-		int (*strbeginsw)(const char *str, const char *substr);
-		int (*strendsw)(const char *str, const char *substr);
+		int (* const snprintf)(char *str, size_t str_m, const char *fmt, ...);
+		int (* const vsnprintf)(char *str, size_t str_m, const char *fmt, va_list ap);
+		int (* const asprintf)(char **ptr, const char *fmt, ...);
+		int (* const vasprintf)(char **ptr, const char *fmt, va_list ap);
+		int (* const strbeginsw)(const char *str, const char *substr);
+		int (* const strendsw)(const char *str, const char *substr);
 	} utils;
 
 	struct {
