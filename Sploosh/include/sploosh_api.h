@@ -78,6 +78,17 @@ typedef struct sploosh_api {
 	} events;
 
 	sploosh_plugin_settings_t settings;
+
+	struct {
+		int (*snprintf)(char *str, size_t str_m, const char *fmt, ...);
+		int (*vsnprintf)(char *str, size_t str_m, const char *fmt, va_list ap);
+		int (*asprintf)(char **ptr, const char *fmt, ...);
+		int (*vasprintf)(char **ptr, const char *fmt, va_list ap);
+		int (*asnprintf)(char **ptr, size_t str_m, const char *fmt, ...);
+		int (*vasnprintf)(char **ptr, size_t str_m, const char *fmt, va_list ap);
+		int (*strbeginsw)(const char *str, const char *substr);
+		int (*strendsw)(const char *str, const char *substr);
+	} utils;
 } sploosh_api_t;
 
 #endif /* SPLOOSH_API_H */
