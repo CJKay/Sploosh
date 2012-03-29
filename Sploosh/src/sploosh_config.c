@@ -3,7 +3,10 @@
 #include "../include/sploosh_log.h"
 #include "../include/sploosh_plugins.h"
 #include "../include/sploosh_api.h"
+#include "../include/sploosh_utils.h"
 #include "../include/sploosh.h"
+
+#include "../include/snprintf.h"
 
 #include <libconfig.h>
 
@@ -164,6 +167,15 @@ sploosh_error_t sploosh_config_import(const char *cfgfile) {
 					&sploosh_log_puts,
 					&sploosh_log_eprintf,
 					&sploosh_log_eputs
+				},
+
+				{
+					&sploosh_utils_snprintf,
+					&sploosh_utils_vsnprintf,
+					&sploosh_utils_asprintf,
+					&sploosh_utils_vasprintf,
+					&sploosh_utils_strbeginsw,
+					&sploosh_utils_strendsw
 				}
 			};
 
