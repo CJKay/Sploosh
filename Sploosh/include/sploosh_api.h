@@ -13,6 +13,7 @@ typedef void (*sploosh_event_generic_t)(const char *event, const char *origin, c
 typedef void (*sploosh_event_numeric_t)(unsigned int event, const char *origin, const char **params, unsigned int count);
 typedef void (*sploosh_event_dcc_chat_req_t)(const char *nick, const char *addr, sploosh_dccid_t dccid);
 typedef void (*sploosh_event_dcc_send_req_t)(const char *nick, const char *addr, const char *filename, unsigned long size, sploosh_dccid_t dccid);
+typedef void (*sploosh_event_command_t)(const char *nch, const char *origin, const char *cmd, const char **params, unsigned int count);
 
 typedef struct sploosh_api {
 	struct {
@@ -73,6 +74,7 @@ typedef struct sploosh_api {
 		sploosh_event_numeric_t numeric;
 		sploosh_event_dcc_chat_req_t dcc_chat_req;
 		sploosh_event_dcc_send_req_t dcc_send_req;
+		sploosh_event_command_t command;
 	} events;
 
 	sploosh_plugin_settings_t settings;

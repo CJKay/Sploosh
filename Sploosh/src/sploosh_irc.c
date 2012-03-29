@@ -8,6 +8,7 @@
 
 #include <assert.h>
 #include <signal.h>
+#include <string.h>
 
 extern libmod_application_t libmod_application;
 
@@ -35,7 +36,7 @@ static void sploosh_irc_event_connect(irc_session_t *session, const char *event,
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.connect;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.connect;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -46,7 +47,7 @@ static void sploosh_irc_event_nick(irc_session_t *session, const char *event, co
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.nick;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.nick;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -68,7 +69,7 @@ static void sploosh_irc_event_join(irc_session_t *session, const char *event, co
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.join;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.join;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -79,7 +80,7 @@ static void sploosh_irc_event_part(irc_session_t *session, const char *event, co
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.part;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.part;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -90,7 +91,7 @@ static void sploosh_irc_event_mode(irc_session_t *session, const char *event, co
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.mode;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.mode;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -101,7 +102,7 @@ static void sploosh_irc_event_umode(irc_session_t *session, const char *event, c
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.umode;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.umode;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -112,7 +113,7 @@ static void sploosh_irc_event_topic(irc_session_t *session, const char *event, c
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.topic;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.topic;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -123,7 +124,7 @@ static void sploosh_irc_event_kick(irc_session_t *session, const char *event, co
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.kick;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.kick;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -134,9 +135,38 @@ static void sploosh_irc_event_channel(irc_session_t *session, const char *event,
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.channel;
-		if(fn != NULL)
-			fn(event, origin, params, count);
+		if(*params[count - 1] == '!') {
+			sploosh_event_command_t fn;
+
+			char *text = malloc(sizeof(char) * (strlen(params[count - 1] + 1) + 1));
+			strcpy(text, params[count - 1] + 1);
+
+			char **args = NULL;
+			char *pch = strstr(text, " ");
+			text[strcspn(text, " ")] = '\0';
+
+			int j = 0;
+
+			if(pch != NULL) {
+				pch = strtok(pch + 1, " ");
+				while(pch != NULL) {
+					args = realloc(args, sizeof(char *) * ++j);
+					args[j - 1] = pch;
+					pch = strtok(NULL, " ");
+				}
+			}
+
+			fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.command;
+			if(fn != NULL)
+				fn(params[0], origin, text, (const char **)args, i);
+
+			if(args != NULL) free(args);
+			free(text);
+		} else {
+			sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.channel;
+			if(fn != NULL)
+				fn(event, origin, params, count);
+		}
 	}
 }
 
@@ -145,7 +175,7 @@ static void sploosh_irc_event_privmsg(irc_session_t *session, const char *event,
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.privmsg;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.privmsg;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -156,7 +186,7 @@ static void sploosh_irc_event_notice(irc_session_t *session, const char *event, 
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.notice;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.notice;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -167,7 +197,7 @@ static void sploosh_irc_event_invite(irc_session_t *session, const char *event, 
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.invite;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.invite;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -178,7 +208,7 @@ static void sploosh_irc_event_ctcp_req(irc_session_t *session, const char *event
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.ctcp_req;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.ctcp_req;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -189,7 +219,7 @@ static void sploosh_irc_event_ctcp_rep(irc_session_t *session, const char *event
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.ctcp_rep;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.ctcp_rep;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -200,7 +230,7 @@ static void sploosh_irc_event_ctcp_action(irc_session_t *session, const char *ev
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.ctcp_action;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.ctcp_action;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -211,7 +241,7 @@ static void sploosh_irc_event_unknown(irc_session_t *session, const char *event,
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.unknown;
+		sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.unknown;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
@@ -222,29 +252,29 @@ static void sploosh_irc_event_numeric(irc_session_t *session, unsigned int event
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_eventcode_callback_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.numeric;
+		sploosh_event_numeric_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.numeric;
 		if(fn != NULL)
 			fn(event, origin, params, count);
 	}
 }
 
-static void sploosh_irc_event_dcc_chat_req(irc_session_t *session, const char *nick, const char *addr, sploosh_irc_dcc_t dccid) {
+static void sploosh_irc_event_dcc_chat_req(irc_session_t *session, const char *nick, const char *addr, sploosh_dccid_t dccid) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_dcc_chat_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.dcc_chat_req;
+		sploosh_event_dcc_chat_req_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.dcc_chat_req;
 		if(fn != NULL)
 			fn(nick, addr, dccid);
 	}
 }
 
-static void sploosh_irc_event_dcc_send_req(irc_session_t *session, const char *nick, const char *addr, const char *filename, unsigned long size, sploosh_irc_dcc_t dccid) {
+static void sploosh_irc_event_dcc_send_req(irc_session_t *session, const char *nick, const char *addr, const char *filename, unsigned long size, sploosh_dccid_t dccid) {
 	sploosh_bot_t *bot = libmod_application.stub.context;
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_irc_event_dcc_send_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.dcc_send_req;
+		sploosh_event_dcc_send_req_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.dcc_send_req;
 		if(fn != NULL)
 			fn(nick, addr, filename, size, dccid);
 	}
