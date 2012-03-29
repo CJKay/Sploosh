@@ -5,7 +5,8 @@
 #include "sploosh_log.h"
 #include "sploosh_config.h"
 
-#include <stdint.h>
+#include <stdarg.h>
+#include <stddef.h>
 
 typedef unsigned int sploosh_pluginid_t;
 typedef unsigned int sploosh_dccid_t;
@@ -22,7 +23,7 @@ typedef struct sploosh_api {
 		const char *realname;
 		const char *password;
 		const char *server;
-		uint16_t port;
+		unsigned int port;
 	} info;
 
 	struct {
@@ -52,6 +53,15 @@ typedef struct sploosh_api {
 		sploosh_error_t (* const eputs)(sploosh_log_statement_t stmt, unsigned int line, const char *file, const char *str);
 		void (* const setstmt)(const char *stmt);
 	} log;
+
+	struct {
+		int (* const snprintf)(char *str, size_t str_m, const char *fmt, ...);
+		int (* const vsnprintf)(char *str, size_t str_m, const char *fmt, va_list ap);
+		int (* const asprintf)(char **ptr, const char *fmt, ...);
+		int (* const vasprintf)(char **ptr, const char *fmt, va_list ap);
+		int (* const strbeginsw)(const char *str, const char *substr);
+		int (* const strendsw)(const char *str, const char *substr);
+	} utils;
 
 	struct {
 		sploosh_event_generic_t connect;
