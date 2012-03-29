@@ -135,32 +135,35 @@ static void sploosh_irc_event_channel(irc_session_t *session, const char *event,
 
 	int i;
 	for(i = 0; i < bot->plugins.count; i++) {
-		sploosh_event_generic_t fn;
-
 		if(*params[count - 1] == '!') {
+			sploosh_event_command_t fn;
+
 			char *text = malloc(sizeof(char) * (strlen(params[count - 1] + 1) + 1));
 			strcpy(text, params[count - 1] + 1);
 
 			char **args = NULL;
-
 			char *pch = strstr(text, " ");
-			*pch = '\0';
+			text[strcspn(text, " ")] = '\0';
 
-			int i = 0;
-			pch = strtok(pch + 1, " ");
-			while(pch != NULL) {
-				args = realloc(args, sizeof(char *) * ++i);
-				args[i - 1] = pch;
-				pch = strtok(NULL, " ");
+			int j = 0;
+
+			if(pch != NULL) {
+				pch = strtok(pch + 1, " ");
+				while(pch != NULL) {
+					args = realloc(args, sizeof(char *) * ++j);
+					args[j - 1] = pch;
+					pch = strtok(NULL, " ");
+				}
 			}
 
 			fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.command;
 			if(fn != NULL)
-				fn(params[0], text, (const char **)args, i);
+				fn(params[0], origin, text, (const char **)args, i);
 
+			if(args != NULL) free(args);
 			free(text);
 		} else {
-			fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.channel;
+			sploosh_event_generic_t fn = ((sploosh_api_t *)bot->plugins.plugin[i]->appcontext)->events.channel;
 			if(fn != NULL)
 				fn(event, origin, params, count);
 		}
